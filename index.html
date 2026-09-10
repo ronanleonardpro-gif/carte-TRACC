@@ -54,6 +54,9 @@ td.num{font-family:'IBM Plex Mono',monospace;text-align:right;white-space:nowrap
 .up{background:var(--coral-soft);color:var(--coral);}
 .down{background:var(--teal-soft);color:var(--teal);}
 .flat{background:var(--bg);color:var(--ink-mute);}
+.chg{background:#E6F1FB;color:#185FA5;}
+.dry{background:#F1E4BE;color:#6B4413;}
+.wet{background:#CEE9E5;color:#245B54;}
 .empty{color:var(--ink-mute);font-size:13px;padding:24px 8px;text-align:center;}
 button.export{margin-top:14px;width:100%;background:var(--ink);color:#fff;border:none;border-radius:8px;padding:10px 12px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;}
 button.export:disabled{background:var(--line-strong);cursor:not-allowed;}
@@ -62,7 +65,7 @@ button.export:hover:not(:disabled){background:#0a1815;}
 .legend span{display:inline-flex;align-items:center;gap:5px;}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
 .cp-search{position:relative;margin-top:10px;}
-.cp-search input{width:100%;font:inherit;font-size:12.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:8px;background:#fff;color:var(--ink);}
+.cp-search input{width:100%;font:inherit;font-size:15px;padding:12px 14px;border:2px solid var(--line-strong);border-radius:8px;background:#fff;color:var(--ink);}
 .cp-search input:focus{outline:none;border-color:var(--teal);}
 #cpResults{margin-top:4px;max-height:180px;overflow-y:auto;border-radius:8px;}
 #cpResults:not(:empty){border:1px solid var(--line);background:#fff;}
@@ -92,6 +95,12 @@ button.export:hover:not(:disabled){background:#0a1815;}
 .map-legend .title{font-weight:500;color:var(--ink);margin-bottom:6px;font-size:12px;}
 .grad-bar{height:10px;border-radius:5px;width:100%;margin:4px 0;}
 .grad-labels{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-mute);}
+.class-bar{display:flex;width:100%;height:12px;border-radius:3px;overflow:hidden;margin:4px 0;}
+.class-bar i{flex:1;display:block;}
+.class-key{display:flex;justify-content:space-between;gap:6px;margin-top:6px;font-size:10.5px;color:var(--ink-soft);}
+.class-key span{display:inline-flex;align-items:center;gap:4px;}
+.class-key i{width:9px;height:9px;border-radius:2px;display:inline-block;border:1px solid rgba(0,0,0,.12);}
+.class-note{margin-top:6px;font-size:10px;color:var(--ink-mute);line-height:1.35;}
 
 .maptools{background:rgba(255,255,255,0.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   border:1px solid rgba(215,222,217,0.9);border-radius:10px;padding:9px 11px;font-size:11px;
@@ -143,12 +152,19 @@ button.export:hover:not(:disabled){background:#0a1815;}
 <div class="wrap">
 <header class="top">
 <h1>Explorateur climatique TRACC</h1>
-<p>Cliquez sur un point de la carte pour identifier le point de grille DRIAS le plus proche (rattachement par distance orthodromique, formule officielle) et consulter les indicateurs climatiques associés.</p>
+<p>Cliquez sur un point de la carte, ou recherchez une commune ci-dessous, pour identifier le point de grille DRIAS<sup>*</sup> le plus proche et consulter les indicateurs climatiques associés.</p>
+<p style="font-size:11.5px;color:var(--ink-mute);margin-top:2px;"><sup>*</sup> DRIAS : portail français de référence pour les données climatiques régionalisées (Météo-France, CNRS, CERFACS). La « grille » désigne le maillage de points sur lequel ces données sont calculées — <a href="#methodo" style="color:var(--teal);">méthodologie complète en bas de page</a>.</p>
 <div class="tabs" id="tabs">
   <button data-tab="explorer" class="active">Explorateur par point</button>
   <button data-tab="choropleth">Carte des indicateurs</button>
 </div>
 </header>
+
+<div id="onboardBanner" style="display:none;background:var(--teal-soft);border:1px solid var(--teal-line);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:12.5px;color:var(--ink);line-height:1.5;">
+  <b>Nouveau sur cet outil ?</b> Deux façons de l'explorer : l'onglet <b>« Explorateur par point »</b> pour la fiche détaillée d'un lieu précis, et <b>« Carte des indicateurs »</b> pour visualiser un indicateur sur toute la France. Toutes les valeurs sont des écarts par rapport à la période 1976-2005.
+  <a href="#methodo" style="color:var(--teal);font-weight:500;">Méthodologie et sources en bas de page.</a>
+  <button id="onboardClose" style="float:right;border:none;background:none;color:var(--ink-mute);cursor:pointer;font-size:14px;line-height:1;">✕</button>
+</div>
 
 <div class="mapstage">
   <div id="map"></div>
@@ -159,9 +175,10 @@ button.export:hover:not(:disabled){background:#0a1815;}
       <div class="seg" id="horizonSeg"></div>
       <div class="seg" id="datasetSeg"></div>
     </div>
-    <div class="hint">Chaque horizon correspond à un niveau de réchauffement officiel TRACC (couple fixe niveau/horizon).</div>
+    <div class="hint">Chaque horizon correspond à un niveau de réchauffement officiel TRACC (couple fixe niveau/horizon). <b>Q50</b> et <b>Max</b> ne sont pas des scénarios d'émissions du GIEC : ce sont deux façons de lire la dispersion de l'ensemble des modèles climatiques pour un même niveau de réchauffement. <b>Q50 (médiane)</b> : la moitié des modèles projettent une valeur inférieure, l'autre moitié une valeur supérieure. <b>Max</b> : la valeur la plus élevée de l'ensemble des modèles — utile pour dimensionner un scénario défavorable.</div>
+    <div class="hint" style="font-weight:500;color:var(--ink);margin-top:10px;">Deux façons de sélectionner un point : cliquez directement sur la carte, ou recherchez une commune ci-dessous.</div>
     <div class="cp-search">
-      <input type="text" id="cpInput" placeholder="Rechercher une commune par nom ou code postal">
+      <input type="text" id="cpInput" placeholder="Nom de commune ou code postal…">
       <div id="cpResults"></div>
     </div>
     <div id="pointInfo" class="point-info" style="margin-top:12px;">Sélectionnez un point sur la carte, ou recherchez une commune par code postal.</div>
@@ -181,7 +198,7 @@ button.export:hover:not(:disabled){background:#0a1815;}
       <div class="seg" id="horizonSeg2"></div>
       <div class="seg" id="datasetSeg2"></div>
     </div>
-    <div class="hint">Sélectionnez un indicateur à afficher en couleur sur la carte (8 981 points de grille). Cliquez sur un point pour afficher son détail : plus fortes variations et positionnement national.</div>
+    <div class="hint">Sélectionnez un indicateur à afficher en couleur sur la carte (8 981 points de grille). Cliquez sur un point pour afficher son détail : plus fortes variations et positionnement national.<br><b>Q50 (médiane)</b> : la moitié des modèles climatiques sont en dessous de la valeur affichée, l'autre moitié au-dessus. <b>Max</b> : valeur maximale de l'ensemble des modèles.</div>
     <div class="radio-group" id="indicatorRadios"></div>
     <button class="export" id="exportPptBtn" style="margin-top:10px;">Exporter la synthèse (PowerPoint)</button>
     <button class="export" id="exportGeoBtn" style="margin-top:8px;">Exporter au format SIG (GeoJSON)</button>
@@ -190,13 +207,12 @@ button.export:hover:not(:disabled){background:#0a1815;}
 
   <div class="map-legend" id="mapLegend">
     <div class="title" id="legendTitle">—</div>
-    <div class="grad-bar" id="legendBar"></div>
-    <div class="grad-labels"><span id="legendMin">—</span><span id="legendMax">—</span></div>
+    <div id="legendBody"></div>
   </div>
 </div>
 
-<div class="foot">
-Source : extractions TRACC2023 (Météo-France DCSC / DRIAS), scénarios Q50 (médiane) et Max (haut de fourchette). Rattachement au point de grille le plus proche par distance orthodromique (rayon terrestre 6371&nbsp;km), méthode identique à la légende du fichier DRIAS2020_BPI_Extract_Base_DRIAS. Valeurs projetées = référence 1976-2005 + écart. Écarts relatifs appliqués en multiplicatif. Les codes affichés (ex. <code style="font-family:'IBM Plex Mono',monospace">ATMm_yr</code>) sont la nomenclature technique DRIAS des indicateurs.
+<div class="foot" id="methodo">
+Source : extractions TRACC2023 (Météo-France DCSC / DRIAS), deux lectures de l'ensemble des modèles climatiques : Q50 (médiane de l'ensemble — la moitié des modèles est en dessous, la moitié au-dessus) et Max (valeur maximale de l'ensemble). Il ne s'agit pas de scénarios d'émissions du GIEC, mais de la dispersion des modèles pour un même niveau de réchauffement TRACC. Rattachement au point de grille le plus proche par distance orthodromique (rayon terrestre 6371&nbsp;km), méthode identique à la légende du fichier DRIAS2020_BPI_Extract_Base_DRIAS. Valeurs projetées = référence 1976-2005 + écart. Écarts relatifs appliqués en multiplicatif. Les codes affichés (ex. <code style="font-family:'IBM Plex Mono',monospace">ATMm_yr</code>) sont la nomenclature technique DRIAS des indicateurs.
 <div style="margin-top:10px;">
 <b style="color:var(--ink-soft);font-weight:500;">Documentation officielle de référence</b><br>
 <a href="https://www.ecologie.gouv.fr/politiques-publiques/trajectoire-rechauffement-reference-ladaptation-changement-climatique-tracc" target="_blank" rel="noopener">Ministère de la Transition écologique — page dédiée à la TRACC</a><br>
@@ -221,6 +237,32 @@ const WARM_STOPS = ['#FEF3C7','#FAC775','#EF9F27','#D85A30','#993C1D','#501313']
 const COOL_POS_STOPS = ['#E6F1FB','#85B7EB','#378ADD','#185FA5','#0C447C','#042C53'];
 const COOL_NEG_STOPS = ['#FAEEDA','#FAC775','#EF9F27','#BA7517','#854F0B','#412402'];
 
+// ── Échelle divergente des précipitations ────────────────────────────────────
+// Contrairement aux indicateurs de chaleur (où « plus » = « pire »), une évolution
+// des précipitations n'a pas de sens univoque : une baisse tire vers la sécheresse,
+// une hausse vers le risque d'inondation. On utilise donc une échelle divergente
+// classée, centrée sur zéro : brun = plus sec, sarcelle = plus humide, gris = stable.
+// Bornes en écart relatif (fraction) vs référence 1976-2005 ; 11 classes.
+const PRECIP_BREAKS = [-0.45,-0.35,-0.25,-0.15,-0.05,0.05,0.15,0.25,0.35,0.45];
+const PRECIP_COLORS = ['#4F320F','#84541E','#B6843F','#DAC386','#F1E4BE','#F2F2F2',
+                       '#CEE9E5','#92CBC1','#52958F','#2B655E','#113128'];
+const PRECIP_LABELS = ['< -45 %','-45 à -35 %','-35 à -25 %','-25 à -15 %','-15 à -5 %','-5 à +5 %',
+                       '+5 à +15 %','+15 à +25 %','+25 à +35 %','+35 à +45 %','> +45 %'];
+
+function precipColor(rel){
+  if(rel===null || rel===undefined || isNaN(rel)) return '#F2F2F2';
+  for(let i=0;i<PRECIP_BREAKS.length;i++){ if(rel < PRECIP_BREAKS[i]) return PRECIP_COLORS[i]; }
+  return PRECIP_COLORS[PRECIP_COLORS.length-1];
+}
+
+// Évolution relative d'un indicateur en fraction (ex. -0,10 = -10 %).
+// Les indicateurs « écart relatif » portent déjà cette valeur ; pour les écarts
+// absolus (ex. jours de pluies remarquables) on rapporte l'écart à la référence.
+function relativeChange(ind, ref, delta){
+  if(ind.type==='écart relatif') return delta;
+  return Math.abs(ref)>0.05 ? delta/ref : null;
+}
+
 const HORIZON_LABELS = {2030:'2030 (France +2°C)', 2050:'2050 (France +2,7°C)', 2100:'2100 (France +4°C)'};
 let currentCombo = DATA.combos[0].key;
 let currentDataset = 'q50';
@@ -235,6 +277,18 @@ const COMBO_MAP = combosByKey();
 const IND_MAP = {}; DATA.indicators.forEach(i=>IND_MAP[i.key]=i);
 // Libellés : « Tx » (température maximale) explicité pour lever toute ambiguïté.
 DATA.indicators.forEach(i=>{ i.label = i.label.replace(/\bTx\b/g, 'température maximale'); });
+
+// Couleur de la pastille d'évolution. Pour les indicateurs de température/chaleur/sécheresse/feu (WARM_KEYS),
+// une hausse est sans ambiguïté défavorable (rouge) et une baisse favorable (vert). Pour les précipitations
+// (COOL_KEYS), une hausse comme une baisse peuvent être défavorables selon le contexte (inondation vs
+// sécheresse) : on reprend le code de l'échelle divergente de la carte — brun = plus sec, sarcelle = plus
+// humide — qui décrit le sens de l'évolution sans porter de jugement bon/mauvais.
+function pillClass(ind, delta){
+  if(WARM_KEYS.includes(ind.key)) return delta>0.0001?'up':(delta<-0.0001?'down':'flat');
+  if(delta>0.0001) return 'wet';
+  if(delta<-0.0001) return 'dry';
+  return 'flat';
+}
 
 // Valeur projetée d'un indicateur : référence + écart (multiplicatif pour les écarts relatifs)
 function projectedValue(ind, ref, delta){
@@ -290,6 +344,18 @@ buildSeg(document.getElementById('horizonSeg2'), [{key:'ref'}].concat(DATA.combo
 }, (c)=>c.key==='ref' ? 'Référence 1976-2005' : HORIZON_LABELS[c.horizon], 1);
 buildSeg(document.getElementById('datasetSeg2'), [{k:'q50',label:'Q50 médiane'},{k:'max',label:'Max haut de fourchette'}], (d)=>{ currentDataset2=d.k; refreshChoropleth(); refreshPinnedPopup(); }, (d)=>d.label);
 
+// Info-bulles sur les boutons Q50 / Max : rappel de ce que représentent ces deux lectures
+// de l'ensemble des modèles climatiques (et non des scénarios d'émissions).
+const DS_TOOLTIP = {
+  'q50':'Q50 — médiane de l\u2019ensemble des modèles climatiques pour ce niveau de réchauffement TRACC : la moitié des modèles projettent une valeur inférieure, l\u2019autre moitié une valeur supérieure.',
+  'max':'Max — valeur maximale de l\u2019ensemble des modèles climatiques pour ce niveau de réchauffement TRACC. Ce n\u2019est pas un scénario d\u2019émissions plus pessimiste, mais le modèle le plus élevé du même ensemble.'
+};
+['datasetSeg','datasetSeg2'].forEach(id=>{
+  const btns = document.getElementById(id).querySelectorAll('button');
+  if(btns[0]) btns[0].title = DS_TOOLTIP.q50;
+  if(btns[1]) btns[1].title = DS_TOOLTIP.max;
+});
+
 // Indicator radio list
 (function buildRadios(){
   const wrap = document.getElementById('indicatorRadios');
@@ -306,8 +372,21 @@ buildSeg(document.getElementById('datasetSeg2'), [{k:'q50',label:'Q50 médiane'}
 })();
 
 function radioRow(ind, groupName){
-  return '<label class="radio-row"><input type="radio" name="'+groupName+'" value="'+ind.key+'"><span class="rlabel">'+ind.label+'<div class="rcode">'+ind.key+'</div></span></label>';
+  const def = GLOSSARY[ind.key] ? esc(GLOSSARY[ind.key]) : '';
+  return '<label class="radio-row" title="'+def+'"><input type="radio" name="'+groupName+'" value="'+ind.key+'"><span class="rlabel">'+ind.label+'<div class="rcode">'+ind.key+'</div></span></label>';
 }
+
+// Bannière d'accueil : affichée au premier chargement uniquement (mémorisée en local)
+(function initOnboarding(){
+  try{
+    const banner = document.getElementById('onboardBanner');
+    if(!localStorage.getItem('tracc_onboard_dismissed')){ banner.style.display='block'; }
+    document.getElementById('onboardClose').addEventListener('click', ()=>{
+      banner.style.display='none';
+      localStorage.setItem('tracc_onboard_dismissed','1');
+    });
+  }catch(e){ /* localStorage indisponible (navigation privée) : pas bloquant */ }
+})();
 
 // Tabs
 document.getElementById('tabs').addEventListener('click', (e)=>{
@@ -720,7 +799,7 @@ function renderPointPopup(idx){
     const delta = DATA.data[currentCombo2][currentDataset2][idx][indIdx];
     const proj = ind.type==='écart relatif' ? refV*(1+delta) : refV+delta;
     const pct = percentileNat(indIdx, delta, currentCombo2, currentDataset2);
-    html += '<div class="cur">'+ind.label+'<br><b>'+fmt(refV,1)+' → '+fmt(proj,1)+'</b> <span class="delta-pill '+(delta>0?'up':(delta<0?'down':'flat'))+'">'+fmtDelta(ind, delta)+'</span>'+pctRow(pct)+'</div>';
+    html += '<div class="cur">'+ind.label+'<br><b>'+fmt(refV,1)+' → '+fmt(proj,1)+'</b> <span class="delta-pill '+pillClass(ind, delta)+'">'+fmtDelta(ind, delta)+'</span>'+pctRow(pct)+'</div>';
 
     const tv = topVariations(idx, currentCombo2, currentDataset2);
     html += '<div class="top-title">Top 3 — écart relatif (vs référence du point)</div><table>';
@@ -768,9 +847,8 @@ function refreshExplorer(){
   }
   const combo = COMBO_MAP[currentCombo];
   const communeLine = selected.commune ? ('<br>Commune la plus proche&nbsp;: <b>'+selected.commune.name+'</b> ('+selected.commune.cp+')') : '';
-  info.innerHTML = '<b>Point DRIAS n°'+selected.pid+'</b> — '+selected.lat.toFixed(4)+', '+selected.lon.toFixed(4)
+  info.innerHTML = '<b>Point DRIAS le plus proche&nbsp;: n°'+selected.pid+' ('+fmt(selected.distKm,2)+'&nbsp;km)</b> — '+selected.lat.toFixed(4)+', '+selected.lon.toFixed(4)
     +communeLine
-    +'<br>Distance au clic&nbsp;: '+fmt(selected.distKm,2)+'&nbsp;km'
     +'<br>Horizon&nbsp;: '+HORIZON_LABELS[combo.horizon]+' · Jeu&nbsp;: '+(currentDataset==='q50'?'Q50 médiane':'Max haut de fourchette');
 
   const refRow = DATA.ref[selected.idx];
@@ -796,19 +874,21 @@ function refreshExplorer(){
   let rows='';
   rowsData.forEach(r=>{
     const ind=r.ind;
+    const u = unitFor(ind);
     const deltaDisp = ind.type==='écart relatif'
       ? (r.delta>=0?'+':'')+(r.delta*100).toFixed(1)+' %'
       : (r.delta>=0?'+':'')+r.delta.toFixed(2)+' '+ind.unit;
     const evoDisp = r.relPct===null ? 'n.s.' : (r.relPct>=0?'+':'')+(r.relPct*100).toFixed(0)+' %';
-    const cls = r.delta>0.0001?'up':(r.delta<-0.0001?'down':'flat');
-    rows += '<tr><td>'+ind.label+'<div style="font-size:10.5px;color:var(--ink-mute)"><code style="font-family:\'IBM Plex Mono\',monospace">'+ind.key+'</code></div></td>'
-      +'<td class="num">'+fmt(r.ref,2)+'</td>'
+    const cls = pillClass(ind, r.delta);
+    rows += '<tr><td>'+ind.label+'<div style="font-size:10.5px;color:var(--ink-mute)" title="'+(GLOSSARY[ind.key]?esc(GLOSSARY[ind.key]):'')+'"><code style="font-family:\'IBM Plex Mono\',monospace">'+ind.key+'</code></div></td>'
+      +'<td class="num">'+fmt(r.ref,2)+' '+u+'</td>'
       +'<td class="num">'+deltaDisp+'</td>'
-      +'<td class="num"><span class="delta-pill '+cls+'">'+evoDisp+'</span></td>'
-      +'<td class="num"><b>'+fmt(r.projected,2)+'</b></td></tr>';
+      +'<td class="num"><b>'+fmt(r.projected,2)+' '+u+'</b></td>'
+      +'<td class="num"><span class="delta-pill '+cls+'">'+evoDisp+'</span></td></tr>';
   });
 
-  wrap.innerHTML = '<table class="indic"><thead><tr><th>Indicateur</th><th style="text-align:right">Réf.</th><th style="text-align:right">Écart</th><th style="text-align:right">Évol.</th><th style="text-align:right">Projeté</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  wrap.innerHTML = '<div class="hint" style="margin-bottom:6px;">Écarts et valeurs projetées calculés par rapport à la période de référence 1976-2005 (moyenne climatique observée). Survolez le code d\u2019un indicateur pour sa définition.</div>'
+    + '<table class="indic"><thead><tr><th>Indicateur</th><th style="text-align:right">Réf.</th><th style="text-align:right">Écart</th><th style="text-align:right">Projeté</th><th style="text-align:right">Évol.</th></tr></thead><tbody>'+rows+'</tbody></table>';
   renderHydroBlock('hydro-card-exp', {lat:(selected.clickLat!=null?selected.clickLat:selected.lat), lng:(selected.clickLng!=null?selected.clickLng:selected.lon)}, 'pt'+selected.pid);
   exportBtn.disabled=false;
   document.getElementById('exportPptBtn2').disabled=false;
@@ -830,32 +910,53 @@ function unitFor(ind){
   return ind.unit==='%' ? (WARM_KEYS.includes(ind.key)?ind.unit:'mm') : ind.unit;
 }
 
-function legendFor(ind, isWarm, min, max, suffix){
+// Légende continue (indicateurs de chaleur, ou valeurs de référence)
+function legendGradient(ind, stops, min, max, suffix){
   const legend = document.getElementById('mapLegend');
   legend.classList.add('show');
   document.getElementById('legendTitle').textContent = ind.label + ' (' + ind.key + ') · ' + suffix;
-  const stops = isWarm ? WARM_STOPS : COOL_POS_STOPS;
-  document.getElementById('legendBar').style.background = 'linear-gradient(to right, '+stops.join(',')+')';
-  const u = unitFor(ind);
-  document.querySelector('#mapLegend .grad-labels').innerHTML =
-    '<span>'+min.toFixed(1)+' '+u+'</span><span>'+max.toFixed(1)+' '+u+'</span>';
+  document.getElementById('legendBody').innerHTML =
+    '<div class="grad-bar" style="background:linear-gradient(to right,'+stops.join(',')+')"></div>'
+    +'<div class="grad-labels"><span>'+min.toFixed(1)+' '+unitFor(ind)+'</span><span>'+max.toFixed(1)+' '+unitFor(ind)+'</span></div>';
 }
 
-function drawPoints(valueAt, ind, isWarm){
-  const {min, max} = PROJ_DOMAIN[ind.key];
-  const stops = isWarm ? WARM_STOPS : COOL_POS_STOPS;
+// Légende classée divergente (précipitations) : bandes discrètes brun → sarcelle
+function legendClassed(ind, suffix){
+  const legend = document.getElementById('mapLegend');
+  legend.classList.add('show');
+  document.getElementById('legendTitle').textContent = ind.label + ' (' + ind.key + ') · ' + suffix;
+  let bands = '<div class="class-bar">';
+  PRECIP_COLORS.forEach((c,i)=>{ bands += '<i style="background:'+c+'" title="'+PRECIP_LABELS[i]+'"></i>'; });
+  bands += '</div>';
+  document.getElementById('legendBody').innerHTML = bands
+    +'<div class="grad-labels"><span>-45 %</span><span>0</span><span>+45 %</span></div>'
+    +'<div class="class-key"><span><i style="background:#84541E"></i>plus sec</span>'
+    +'<span><i style="background:#F2F2F2"></i>stable</span>'
+    +'<span><i style="background:#52958F"></i>plus humide</span></div>'
+    +'<div class="class-note">Écart relatif vs référence 1976-2005. Une baisse comme une hausse peuvent être défavorables (sécheresse / ruissellement) : l\u2019échelle est neutre, sans code bon-mauvais.</div>';
+}
+
+// Rayon des points adapté au zoom : à l'échelle nationale (zoom faible) les points denses
+// forment une nappe de couleur continue ; en zoomant, on les agrandit pour rester lisibles
+// plutôt que de laisser un semis de petits points peu informatif.
+function choroRadiusForZoom(z){
+  return Math.max(3, Math.min(11, Math.round((z-5)*1.6)+4));
+}
+
+function drawPoints(colorAt){
   if(choroLayer) map.removeLayer(choroLayer);
   choroLayer = L.layerGroup();
   const renderer = L.canvas({pane:'choro', padding:0.5});
+  const radius = choroRadiusForZoom(map.getZoom());
   for(let i=0;i<DATA.ids.length;i++){
-    const t = (valueAt(i)-min)/((max-min)||1);
-    const color = interpolateStops(stops, t);
+    const color = colorAt(i);
     L.circleMarker([DATA.lats[i], DATA.lons[i]], {
-      radius:4, color:color, fillColor:color, fillOpacity:0.68, weight:0, renderer:renderer
+      radius:radius, color:color, fillColor:color, fillOpacity:0.68, weight:0, renderer:renderer
     }).addTo(choroLayer);
   }
   choroLayer.addTo(map);
 }
+map.on('zoomend', ()=>{ if(activeTab==='choropleth') refreshChoropleth(); });
 
 function refreshChoropleth(){
   if(!currentIndicator) return;
@@ -863,14 +964,26 @@ function refreshChoropleth(){
   const ind = DATA.indicators[indIdx];
   const isWarm = WARM_KEYS.includes(currentIndicator);
   const {min, max} = PROJ_DOMAIN[currentIndicator];
+  const stops = isWarm ? WARM_STOPS : COOL_POS_STOPS;
 
   if(currentCombo2==='ref'){
-    drawPoints(i=>DATA.ref[i][indIdx], ind, isWarm);
-    legendFor(ind, isWarm, min, max, 'référence 1976-2005 · échelle fixe réf→2100');
+    // Mode référence : pas d'évolution à représenter, on affiche les valeurs
+    // observées 1976-2005 sur une échelle séquentielle.
+    drawPoints(i=>interpolateStops(stops, (DATA.ref[i][indIdx]-min)/((max-min)||1)));
+    legendGradient(ind, stops, min, max, 'référence 1976-2005 · échelle fixe réf→2100');
+    return;
+  }
+
+  const matrix = DATA.data[currentCombo2][currentDataset2];
+  const hLabel = HORIZON_LABELS[COMBO_MAP[currentCombo2].horizon].split(' ')[0];
+
+  if(isWarm){
+    drawPoints(i=>interpolateStops(stops, (projectedValue(ind, DATA.ref[i][indIdx], matrix[i][indIdx])-min)/((max-min)||1)));
+    legendGradient(ind, stops, min, max, 'valeurs projetées '+hLabel+' · échelle fixe réf→2100');
   } else {
-    const matrix = DATA.data[currentCombo2][currentDataset2];
-    drawPoints(i=>projectedValue(ind, DATA.ref[i][indIdx], matrix[i][indIdx]), ind, isWarm);
-    legendFor(ind, isWarm, min, max, 'valeurs projetées ' + HORIZON_LABELS[COMBO_MAP[currentCombo2].horizon].split(' ')[0] + ' · échelle fixe réf→2100');
+    // Précipitations : échelle divergente classée sur l'évolution relative (%)
+    drawPoints(i=>precipColor(relativeChange(ind, DATA.ref[i][indIdx], matrix[i][indIdx])));
+    legendClassed(ind, 'évolution '+hLabel+' vs référence 1976-2005');
   }
 }
 
@@ -933,13 +1046,19 @@ function renderMapCanvas(comboKey, ds, indKey, highlightIdx, opts){
   const py=(lat)=>titleH + (1-(lat-latMin)/(latMax-latMin))*mapH;
   const rad = isZoom ? 9 : 3.6;
   const matrix = comboKey==='ref' ? null : DATA.data[comboKey][ds];
+  // Précipitations en mode projection : échelle divergente classée sur l'évolution
+  // relative (identique au site). Sinon : dégradé continu sur la valeur projetée.
+  const useDiverging = !isWarm && comboKey!=='ref';
   for(let i=0;i<DATA.ids.length;i++){
     const lat=DATA.lats[i], lon=DATA.lons[i];
     if(isZoom && (lat<latMin-0.2||lat>latMax+0.2||lon<lonMin-0.2||lon>lonMax+0.2)) continue;
-    const v = comboKey==='ref' ? DATA.ref[i][indIdx]
-      : projectedValue(ind, DATA.ref[i][indIdx], matrix[i][indIdx]);
-    const t=(v-min)/((max-min)||1);
-    ctx.fillStyle = interpolateStops(stops, t);
+    if(useDiverging){
+      ctx.fillStyle = precipColor(relativeChange(ind, DATA.ref[i][indIdx], matrix[i][indIdx]));
+    } else {
+      const v = comboKey==='ref' ? DATA.ref[i][indIdx]
+        : projectedValue(ind, DATA.ref[i][indIdx], matrix[i][indIdx]);
+      ctx.fillStyle = interpolateStops(stops, (v-min)/((max-min)||1));
+    }
     ctx.beginPath(); ctx.arc(px(lon), py(lat), rad, 0, 2*Math.PI); ctx.fill();
   }
 
@@ -966,18 +1085,31 @@ function renderMapCanvas(comboKey, ds, indKey, highlightIdx, opts){
     }
   }
 
-  // légende : dégradé + bornes (échelle fixe réf→2100)
+  // légende
   const lgY=titleH+mapH+26, lgX=W*0.18, lgW=W*0.64, lgH=16;
-  const grad=ctx.createLinearGradient(lgX,0,lgX+lgW,0);
-  stops.forEach((s,i)=>grad.addColorStop(i/(stops.length-1), s));
-  ctx.fillStyle=grad; ctx.fillRect(lgX,lgY,lgW,lgH);
-  ctx.strokeStyle='#B0B0B0'; ctx.lineWidth=1; ctx.strokeRect(lgX,lgY,lgW,lgH);
-  ctx.fillStyle='#44546A'; ctx.font='22px Dubai, Trebuchet MS, sans-serif';
-  const u=unitFor(ind);
-  ctx.textAlign='left';  ctx.fillText(min.toFixed(1)+' '+u, lgX, lgY+lgH+26);
-  ctx.textAlign='right'; ctx.fillText(max.toFixed(1)+' '+u, lgX+lgW, lgY+lgH+26);
-  ctx.textAlign='center'; ctx.fillStyle='#6b7280'; ctx.font='19px Dubai, Trebuchet MS, sans-serif';
-  ctx.fillText('Échelle fixe référence → 2100', W/2, lgY+lgH+26);
+  if(useDiverging){
+    // Bandes discrètes brun → sarcelle, bornes -45 % / 0 / +45 %
+    const bw = lgW/PRECIP_COLORS.length;
+    PRECIP_COLORS.forEach((c,i)=>{ ctx.fillStyle=c; ctx.fillRect(lgX+i*bw, lgY, bw+0.5, lgH); });
+    ctx.strokeStyle='#B0B0B0'; ctx.lineWidth=1; ctx.strokeRect(lgX,lgY,lgW,lgH);
+    ctx.fillStyle='#44546A'; ctx.font='22px Dubai, Trebuchet MS, sans-serif';
+    ctx.textAlign='left';   ctx.fillText('-45 %', lgX, lgY+lgH+26);
+    ctx.textAlign='center'; ctx.fillText('0', lgX+lgW/2, lgY+lgH+26);
+    ctx.textAlign='right';  ctx.fillText('+45 %', lgX+lgW, lgY+lgH+26);
+    ctx.textAlign='center'; ctx.fillStyle='#6b7280'; ctx.font='19px Dubai, Trebuchet MS, sans-serif';
+    ctx.fillText('Évolution vs référence 1976-2005 · brun = plus sec, sarcelle = plus humide', W/2, lgY+lgH+52);
+  } else {
+    const grad=ctx.createLinearGradient(lgX,0,lgX+lgW,0);
+    stops.forEach((s,i)=>grad.addColorStop(i/(stops.length-1), s));
+    ctx.fillStyle=grad; ctx.fillRect(lgX,lgY,lgW,lgH);
+    ctx.strokeStyle='#B0B0B0'; ctx.lineWidth=1; ctx.strokeRect(lgX,lgY,lgW,lgH);
+    ctx.fillStyle='#44546A'; ctx.font='22px Dubai, Trebuchet MS, sans-serif';
+    const u=unitFor(ind);
+    ctx.textAlign='left';  ctx.fillText(min.toFixed(1)+' '+u, lgX, lgY+lgH+26);
+    ctx.textAlign='right'; ctx.fillText(max.toFixed(1)+' '+u, lgX+lgW, lgY+lgH+26);
+    ctx.textAlign='center'; ctx.fillStyle='#6b7280'; ctx.font='19px Dubai, Trebuchet MS, sans-serif';
+    ctx.fillText('Échelle fixe référence → 2100', W/2, lgY+lgH+26);
+  }
 
   return {data:cv.toDataURL('image/png'), w:W, h:H};
 }
@@ -1068,7 +1200,7 @@ async function buildSynthesePpt(idx, comboKey, ds, indKey, communeInfo){
       const th = (t)=>({text:t, options:{bold:true, color:EKO.white, fill:{color:EKO.tealDark}, align:'right'}});
       const rows = [[
         {text:'Indicateur', options:{bold:true, color:EKO.white, fill:{color:EKO.tealDark}}},
-        th('Référence'), th('Écart'), th('Évolution'), th('Projeté'), th('Centile nat.')
+        th('Référence'), th('Écart'), th('Projeté'), th('Évolution'), th('Centile nat.')
       ]];
       ranked.forEach((x, i)=>{
         const fill = {color: i%2===0 ? EKO.white : EKO.greyLight};
@@ -1077,12 +1209,12 @@ async function buildSynthesePpt(idx, comboKey, ds, indKey, communeInfo){
           {text:x.ind.label, options:{fill:fill, color:EKO.slate}},
           {text:fmt(x.ref,1)+' '+unitFor(x.ind), options:{fill:fill, color:EKO.slate, align:'right'}},
           {text:fmtDelta(x.ind, x.delta), options:{fill:fill, color:EKO.slate, align:'right'}},
-          {text:evo, options:{fill:fill, color:EKO.tealDark, bold:true, align:'right'}},
           {text:fmt(x.proj,1)+' '+unitFor(x.ind), options:{fill:fill, color:EKO.slate, align:'right'}},
+          {text:evo, options:{fill:fill, color:EKO.tealDark, bold:true, align:'right'}},
           {text:x.p+'ᵉ', options:{fill:fill, color:EKO.slate, align:'right'}}
         ]);
       });
-      s2.addTable(rows, {x:0.4, y:3.02, w:12.53, colW:[4.83,1.6,1.7,1.3,1.7,1.4], fontSize:8,
+      s2.addTable(rows, {x:0.4, y:3.02, w:12.53, colW:[4.83,1.6,1.7,1.7,1.3,1.4], fontSize:8,
         fontFace:EKO.fontLight, border:{type:'solid', color:'B0B0B0', pt:0.5}, rowH:0.235, valign:'middle'});
       s2.addText('Évolution relative : valeur elle-même pour les précipitations (%), écart ÷ référence du point pour les températures. Centiles sur les 8 981 points de la grille DRIAS.',
         {x:0.4, y:6.9, w:12.5, h:0.22, fontSize:8, italic:true, color:EKO.tealMed, fontFace:EKO.fontLight});
@@ -1149,7 +1281,7 @@ async function buildSynthesePpt(idx, comboKey, ds, indKey, communeInfo){
     sG.addShape(pptx.ShapeType.rect, {x:0, y:0, w:13.333, h:0.85, fill:{color:EKO.tealDark}});
     sG.addText('Glossaire des indicateurs TRACC',
       {x:0.35, y:0, w:12.6, h:0.85, fontSize:22, bold:true, color:EKO.white, fontFace:EKO.font, valign:'middle'});
-    sG.addText('Période de référence 1976-2005. Écarts absolus pour les températures ; écarts relatifs (%) pour les précipitations. Source : Météo-France DCSC / DRIAS (jeu TRACC-2023).',
+    sG.addText('Période de référence 1976-2005. Écarts absolus pour les températures ; écarts relatifs (%) pour les précipitations. Q50 = médiane de l\u2019ensemble des modèles climatiques (moitié en dessous, moitié au-dessus) ; Max = valeur maximale de l\u2019ensemble des modèles — ce ne sont pas des scénarios d\u2019émissions du GIEC. Source : Météo-France DCSC / DRIAS (jeu TRACC-2023).',
       {x:0.4, y:0.92, w:12.5, h:0.3, fontSize:10, color:EKO.slate, fontFace:EKO.fontLight});
     const gh = (t)=>({text:t, options:{bold:true, color:EKO.white, fill:{color:EKO.tealDark}}});
     const grows = [[gh('Indicateur'), gh('Code DRIAS'), gh('Unité'), gh('Définition')]];
@@ -1270,6 +1402,8 @@ document.getElementById('exportBtn').onclick = ()=>{
   const glossary = [
     ['Glossaire des indicateurs TRACC'],
     ['Période de référence 1976-2005 · écarts absolus pour les températures, écarts relatifs (%) pour les précipitations · Source : Météo-France DCSC / DRIAS'],
+    ['Q50 (médiane) : médiane de l\u2019ensemble des modèles climatiques pour le niveau de réchauffement TRACC considéré — la moitié des modèles projette une valeur inférieure, l\u2019autre moitié une valeur supérieure.'],
+    ['Max : valeur maximale de l\u2019ensemble des modèles climatiques pour ce même niveau de réchauffement. Q50 et Max ne sont pas des scénarios d\u2019émissions du GIEC.'],
     [],
     ['Indicateur','Code DRIAS','Type d\u2019écart','Unité','Définition']
   ];
