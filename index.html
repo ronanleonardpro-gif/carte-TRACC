@@ -11,7 +11,7 @@
 :root{
   --bg:#EEF2F0; --card:#FFFFFF; --line:#D7DED9; --line-strong:#B7C2BB;
   --ink:#132420; --ink-soft:#4E5C57; --ink-mute:#8B948E;
-  --teal:#0F6E56; --teal-soft:#E1F5EE; --teal-line:#5DCAA5;
+  --teal:#0F6E56;--teal-dark:#0A4A3A; --teal-soft:#E1F5EE; --teal-line:#5DCAA5;
   --coral:#993C1D; --coral-soft:#FAECE7; --coral-line:#F0997B;
   --amber:#854F0B; --amber-soft:#FAEEDA;
   --radius:12px;
@@ -66,6 +66,86 @@ button.export:hover:not(:disabled){background:#0a1815;}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
 .cp-search{position:relative;margin-top:10px;}
 .cp-search input{width:100%;font:inherit;font-size:15px;padding:12px 14px;border:2px solid var(--line-strong);border-radius:8px;background:#fff;color:var(--ink);}
+.search-hero{background:var(--bg);border:1px solid var(--line);border-left:5px solid var(--teal-dark);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
+.search-hero label{display:block;font-size:12.5px;font-weight:600;color:var(--teal-dark);margin-bottom:7px;letter-spacing:.01em;}
+.search-hero .cp-search input{border-color:var(--teal-dark);}
+.search-hero .cp-search input:focus{outline:none;box-shadow:0 0 0 3px rgba(5,65,71,.14);}
+.search-alt{margin-top:7px;font-size:11px;color:var(--ink-mute);}
+
+/* Bouton « i » et info-bulle temporisée */
+.ib{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;
+    background:var(--teal-soft);color:var(--teal-dark);border:1px solid var(--teal-line);
+    font-size:10px;font-weight:700;font-style:normal;cursor:help;vertical-align:middle;
+    margin-left:3px;user-select:none;line-height:1;transition:background .15s;}
+.ib:hover,.ib.on{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark);}
+#ibTip{position:fixed;z-index:9000;max-width:290px;background:#0E2F33;color:#F4F8F8;
+       font-size:11.5px;line-height:1.45;padding:9px 11px;border-radius:8px;
+       box-shadow:0 6px 22px rgba(0,0,0,.28);opacity:0;pointer-events:none;
+       transition:opacity .18s;}
+#ibTip.show{opacity:1;}
+
+/* Onglet Guide */
+.tab-help{margin-left:auto;font-size:12px;}
+
+/* Panneau Méthodologie */
+.m-h{margin:16px 0 5px;font-size:12px;font-weight:700;color:var(--teal-dark);
+     text-transform:uppercase;letter-spacing:.05em;}
+.m-h:first-of-type{margin-top:6px;}
+.m-p{margin:0 0 7px;font-size:12.5px;line-height:1.55;color:var(--ink-soft);}
+.m-l{margin:0 0 7px;padding-left:17px;font-size:12.5px;line-height:1.55;color:var(--ink-soft);}
+.m-l li{margin-bottom:4px;}
+.m-warn{background:#FFF4DC;border-left:3px solid #E0B457;border-radius:0 6px 6px 0;padding:7px 10px;}
+
+/* Modale d'accueil */
+.tour-back{position:fixed;inset:0;z-index:9500;background:rgba(8,32,35,.62);
+           display:flex;align-items:center;justify-content:center;padding:20px;
+           backdrop-filter:blur(2px);}
+.tour-box{position:relative;background:#fff;border-radius:16px;max-width:600px;width:100%;
+          max-height:88vh;overflow:auto;padding:30px 32px 20px;
+          box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.tour-x{position:absolute;top:12px;right:14px;border:none;background:none;font-size:24px;
+        line-height:1;color:var(--ink-mute);cursor:pointer;}
+.tour-x:hover{color:var(--ink);}
+.tour-kicker{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+             color:var(--teal);margin-bottom:5px;}
+.tour-box h3{margin:0 0 12px;font-size:20px;line-height:1.3;color:var(--teal-dark);font-weight:600;}
+.tour-box p{margin:0 0 12px;font-size:13.5px;line-height:1.6;color:var(--ink-soft);}
+.tour-flow{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:16px;
+           background:var(--bg);border-radius:9px;padding:12px;}
+.tour-flow span{background:#fff;border:1px solid var(--line);border-radius:6px;
+                padding:5px 10px;font-size:11.5px;font-weight:600;color:var(--teal-dark);}
+.tour-flow i{color:var(--ink-mute);font-style:normal;font-size:13px;}
+.tour-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+.tour-card{text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:11px;
+           padding:15px;cursor:pointer;font:inherit;transition:border-color .15s,transform .15s;}
+.tour-card:hover{border-color:var(--teal);transform:translateY(-2px);}
+.tc-ico{font-size:21px;margin-bottom:6px;}
+.tour-card b{display:block;font-size:13.5px;color:var(--teal-dark);margin-bottom:5px;}
+.tour-card span{display:block;font-size:12px;line-height:1.5;color:var(--ink-soft);}
+.tour-card em{display:block;margin-top:9px;font-size:11.5px;font-style:normal;
+              font-weight:600;color:var(--teal);}
+.tour-keys{margin:0;}
+.tour-keys dt{font-size:12.5px;font-weight:700;color:var(--teal-dark);margin-top:11px;}
+.tour-keys dt:first-child{margin-top:0;}
+.tour-keys dd{margin:3px 0 0;font-size:12.5px;line-height:1.55;color:var(--ink-soft);}
+.sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:2px;
+    vertical-align:middle;border:1px solid rgba(0,0,0,.12);}
+.tour-foot{display:flex;align-items:center;justify-content:space-between;
+           margin-top:22px;padding-top:15px;border-top:1px solid var(--line);}
+.tour-dots{display:flex;gap:6px;}
+.tour-dots i{width:7px;height:7px;border-radius:50%;background:var(--line-strong);
+             display:block;transition:background .2s;}
+.tour-dots i.on{background:var(--teal);}
+.tour-btns{display:flex;gap:8px;}
+.tb-ghost,.tb-main{font:inherit;font-size:12.5px;border-radius:7px;padding:8px 16px;cursor:pointer;}
+.tb-ghost{background:none;border:1px solid var(--line-strong);color:var(--ink-soft);}
+.tb-ghost:hover{border-color:var(--ink-mute);color:var(--ink);}
+.tb-main{background:var(--teal-dark);border:1px solid var(--teal-dark);color:#fff;font-weight:600;}
+.tb-main:hover{background:var(--teal);border-color:var(--teal);}
+@media(max-width:640px){
+  .tour-cards{grid-template-columns:1fr;}
+  .tour-box{padding:24px 20px 16px;}
+}
 .cp-search input:focus{outline:none;border-color:var(--teal);}
 #cpResults{margin-top:4px;max-height:180px;overflow-y:auto;border-radius:8px;}
 #cpResults:not(:empty){border:1px solid var(--line);background:#fff;}
@@ -101,6 +181,7 @@ button.export:hover:not(:disabled){background:#0a1815;}
 .class-key span{display:inline-flex;align-items:center;gap:4px;}
 .class-key i{width:9px;height:9px;border-radius:2px;display:inline-block;border:1px solid rgba(0,0,0,.12);}
 .class-note{margin-top:6px;font-size:10px;color:var(--ink-mute);line-height:1.35;}
+.class-warn{margin-top:6px;font-size:10px;color:#8A5B00;background:#FFF4DC;border:1px solid #F0DCA8;border-radius:5px;padding:4px 6px;line-height:1.35;}
 
 .maptools{background:rgba(255,255,255,0.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   border:1px solid rgba(215,222,217,0.9);border-radius:10px;padding:9px 11px;font-size:11px;
@@ -157,30 +238,87 @@ button.export:hover:not(:disabled){background:#0a1815;}
 <div class="tabs" id="tabs">
   <button data-tab="explorer" class="active">Explorateur par point</button>
   <button data-tab="choropleth">Carte des indicateurs</button>
+  <button data-tab="methodo">Méthodologie</button>
+  <button id="helpBtn" class="tab-help" title="Revoir le guide de navigation">? Guide</button>
 </div>
 </header>
 
-<div id="onboardBanner" style="display:none;background:var(--teal-soft);border:1px solid var(--teal-line);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:12.5px;color:var(--ink);line-height:1.5;">
-  <b>Nouveau sur cet outil ?</b> Deux façons de l'explorer : l'onglet <b>« Explorateur par point »</b> pour la fiche détaillée d'un lieu précis, et <b>« Carte des indicateurs »</b> pour visualiser un indicateur sur toute la France. Toutes les valeurs sont des écarts par rapport à la période 1976-2005.
-  <a href="#methodo" style="color:var(--teal);font-weight:500;">Méthodologie et sources en bas de page.</a>
-  <button id="onboardClose" style="float:right;border:none;background:none;color:var(--ink-mute);cursor:pointer;font-size:14px;line-height:1;">✕</button>
+<!-- ── Modale d'accueil : guide de navigation en 3 écrans ────────────────── -->
+<div id="tour" class="tour-back" style="display:none;">
+  <div class="tour-box" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <button class="tour-x" id="tourX" aria-label="Fermer">&times;</button>
+
+    <section class="tour-step" data-step="1">
+      <div class="tour-kicker">Bienvenue</div>
+      <h3 id="tourTitle">Les projections climatiques officielles, point par point</h3>
+      <p>Cet explorateur diffuse les projections <b>TRACC&#8209;2023</b> (Météo&#8209;France&nbsp;/ DRIAS) sur <b>8&nbsp;981 points de grille</b> couvrant la France. Toutes les valeurs sont des <b>écarts par rapport à la période de référence 1976 à 2005</b>.</p>
+      <div class="tour-flow">
+        <span>Un lieu</span><i>&rarr;</i><span>15 indicateurs</span><i>&rarr;</i><span>Un horizon</span><i>&rarr;</i><span>Valeur projetée</span>
+      </div>
+    </section>
+
+    <section class="tour-step" data-step="2" hidden>
+      <div class="tour-kicker">Naviguer</div>
+      <h3>Deux points d'entrée, selon votre question</h3>
+      <div class="tour-cards">
+        <button class="tour-card" data-goto="explorer">
+          <div class="tc-ico">&#128205;</div>
+          <b>Explorateur par point</b>
+          <span>Vous partez d'un <b>lieu</b>. Cliquez sur la carte ou saisissez une commune, et obtenez la fiche complète des 15 indicateurs pour ce point.</span>
+          <em>Ouvrir cet onglet</em>
+        </button>
+        <button class="tour-card" data-goto="choropleth">
+          <div class="tc-ico">&#127758;</div>
+          <b>Carte des indicateurs</b>
+          <span>Vous partez d'un <b>indicateur</b>. Choisissez-en un et visualisez-le sur toute la France pour comparer les territoires.</span>
+          <em>Ouvrir cet onglet</em>
+        </button>
+      </div>
+    </section>
+
+    <section class="tour-step" data-step="3" hidden>
+      <div class="tour-kicker">Lire sans se tromper</div>
+      <h3>Trois clés de lecture</h3>
+      <dl class="tour-keys">
+        <dt>Horizon</dt>
+        <dd>2030, 2050, 2100 — chacun correspond à un niveau de réchauffement officiel TRACC.</dd>
+        <dt>Q50 et Max</dt>
+        <dd>Deux lectures du <b>même</b> ensemble de modèles. <b>Q50</b> = médiane : la moitié des modèles est en dessous, l'autre moitié au-dessus. <b>Max</b> = la valeur la plus élevée de l'ensemble. <b>Ce ne sont pas des scénarios d'émissions du GIEC.</b></dd>
+        <dt>Couleurs</dt>
+        <dd><span class="sw" style="background:#C0392B"></span><span class="sw" style="background:#1F8A70"></span> Rouge/vert pour la chaleur, où une hausse est défavorable.<br><span class="sw" style="background:#84541E"></span><span class="sw" style="background:#52958F"></span> Brun/sarcelle pour les précipitations, où ni la hausse ni la baisse ne sont « bonnes » par défaut.</dd>
+      </dl>
+    </section>
+
+    <footer class="tour-foot">
+      <div class="tour-dots"><i class="on"></i><i></i><i></i></div>
+      <div class="tour-btns">
+        <button class="tb-ghost" id="tourPrev" hidden>Précédent</button>
+        <button class="tb-ghost" id="tourSkip">Passer</button>
+        <button class="tb-main" id="tourNext">Suivant</button>
+      </div>
+    </footer>
+  </div>
 </div>
 
 <div class="mapstage">
   <div id="map"></div>
 
   <div class="panel" id="panel-explorer">
+    <div class="search-hero">
+      <label for="cpInput">Rechercher un lieu <span class="ib" data-info="Saisissez un nom de commune ou un code postal, puis choisissez dans la liste. Vous pouvez aussi cliquer directement sur la carte : le point de grille DRIAS le plus proche sera sélectionné automatiquement.">i</span></label>
+      <div class="cp-search">
+        <input type="text" id="cpInput" placeholder="Nom de commune ou code postal…">
+        <div id="cpResults"></div>
+      </div>
+      <div class="search-alt">ou cliquez directement sur un point de la carte</div>
+    </div>
+
     <h2>Paramètres et résultats</h2>
     <div class="controls">
       <div class="seg" id="horizonSeg"></div>
       <div class="seg" id="datasetSeg"></div>
     </div>
-    <div class="hint">Chaque horizon correspond à un niveau de réchauffement officiel TRACC (couple fixe niveau/horizon). <b>Q50</b> et <b>Max</b> ne sont pas des scénarios d'émissions du GIEC : ce sont deux façons de lire la dispersion de l'ensemble des modèles climatiques pour un même niveau de réchauffement. <b>Q50 (médiane)</b> : la moitié des modèles projettent une valeur inférieure, l'autre moitié une valeur supérieure. <b>Max</b> : la valeur la plus élevée de l'ensemble des modèles — utile pour dimensionner un scénario défavorable.</div>
-    <div class="hint" style="font-weight:500;color:var(--ink);margin-top:10px;">Deux façons de sélectionner un point : cliquez directement sur la carte, ou recherchez une commune ci-dessous.</div>
-    <div class="cp-search">
-      <input type="text" id="cpInput" placeholder="Nom de commune ou code postal…">
-      <div id="cpResults"></div>
-    </div>
+    <div class="hint">Horizon <span class="ib" data-info="Chaque horizon correspond à un niveau de réchauffement officiel TRACC (couple fixe niveau/horizon) : 2030, 2050 ou 2100.">i</span> et lecture des modèles <span class="ib" data-info="Q50 (médiane) : la moitié des modèles projettent une valeur inférieure, l’autre moitié une valeur supérieure. Max : la valeur la plus élevée de l’ensemble des modèles. Ce ne sont pas des scénarios d’émissions du GIEC.">i</span> — détail dans l'encart Méthodologie.</div>
     <div id="pointInfo" class="point-info" style="margin-top:12px;">Sélectionnez un point sur la carte, ou recherchez une commune par code postal.</div>
     <div id="indicWrap"><div class="empty">Aucun point sélectionné</div></div>
     <div id="hydro-card-exp" class="hydro-block" style="display:none;"></div>
@@ -203,6 +341,50 @@ button.export:hover:not(:disabled){background:#0a1815;}
     <button class="export" id="exportPptBtn" style="margin-top:10px;">Exporter la synthèse (PowerPoint)</button>
     <button class="export" id="exportGeoBtn" style="margin-top:8px;">Exporter au format SIG (GeoJSON)</button>
     <div class="hint" style="margin-top:6px;" id="pptHint">Sélectionnez un point sur la carte pour inclure la slide « Évolutions clés » du site.</div>
+  </div>
+
+  <div class="panel" id="panel-methodo" style="display:none;">
+    <h2>Méthodologie et sources</h2>
+
+    <h4 class="m-h">Données</h4>
+    <p class="m-p"><b>TRACC&#8209;2023</b> — Trajectoire de Réchauffement de Référence pour l'Adaptation au Changement Climatique. Produit par <b>Météo&#8209;France DCSC</b> et diffusé via le portail <b>DRIAS</b> <span class="ib" data-info="DRIAS : portail français de référence pour la mise à disposition des projections climatiques régionalisées, opéré par Météo-France avec le CNRS et le CERFACS.">i</span>, portail national des projections climatiques régionalisées. Couverture : <b>8&nbsp;981 points de grille</b> sur la France métropolitaine.</p>
+
+    <h4 class="m-h">Période de référence</h4>
+    <p class="m-p">Toutes les valeurs publiées ici sont des <b>écarts par rapport à la période 1976 à 2005</b>, moyenne climatique observée de référence. La valeur projetée affichée est reconstituée en appliquant cet écart à la valeur de référence du point.</p>
+
+    <h4 class="m-h">Q50 et Max</h4>
+    <p class="m-p">Ce sont deux lectures de la dispersion d'un <b>même</b> ensemble de modèles climatiques, à niveau de réchauffement constant.</p>
+    <ul class="m-l">
+      <li><b>Q50 (médiane)</b> — la moitié des modèles projette une valeur inférieure, l'autre moitié une valeur supérieure.</li>
+      <li><b>Max</b> — la valeur la plus élevée de l'ensemble des modèles. Utile pour dimensionner un cas défavorable.</li>
+    </ul>
+    <p class="m-p m-warn">Ce ne sont <b>pas</b> les scénarios d'émissions RCP/SSP du GIEC. Le niveau de réchauffement est fixé par l'horizon choisi, pas par le choix Q50/Max.</p>
+
+    <h4 class="m-h">Horizons et niveaux de réchauffement</h4>
+    <p class="m-p">Chaque horizon est associé à un couple fixe niveau/horizon défini par la trajectoire TRACC : 2030, 2050 et 2100.</p>
+
+    <h4 class="m-h">Unités : point de vigilance</h4>
+    <p class="m-p">Pour les cumuls et intensités de précipitations, la <b>valeur</b> est en millimètres mais l'<b>écart</b> est publié en <b>pourcentage</b>. Les deux unités sont distinguées dans le tableau et dans les exports. La fréquence des précipitations quotidiennes remarquables fait exception : valeur <i>et</i> écart sont en jours.</p>
+
+    <h4 class="m-h">Codes couleur</h4>
+    <ul class="m-l">
+      <li><b>Chaleur, sécheresse, feu</b> — échelle continue rouge/vert : une hausse est sans ambiguïté défavorable.</li>
+      <li><b>Précipitations</b> — échelle divergente classée en 11 niveaux, brun (plus sec) à sarcelle (plus humide), neutre au centre. Ni la hausse ni la baisse ne sont « bonnes » par défaut : une baisse tire vers la sécheresse, une hausse vers le ruissellement et l'inondation.</li>
+    </ul>
+    <p class="m-p">Les bornes de l'échelle des précipitations sont <b>fixes par indicateur</b>, calibrées sur l'ensemble des 53&nbsp;886 valeurs (3 horizons × 2 jeux) de façon à maintenir la part de points saturés sous 1&nbsp;%. Elles ne changent ni avec l'horizon ni avec le choix Q50/Max : les cartes restent comparables entre elles. Lorsque des points dépassent malgré tout les bornes, la légende l'indique explicitement.</p>
+
+    <h4 class="m-h">Rattachement d'un lieu à un point de grille</h4>
+    <p class="m-p">La commune saisie ou le clic sur la carte est rattaché au point de grille DRIAS le plus proche, par <b>distance orthodromique</b> (formule officielle DRIAS). La distance au point retenu est toujours affichée : au-delà de quelques kilomètres, la représentativité locale doit être interprétée avec prudence.</p>
+
+    <h4 class="m-h">Limites d'usage</h4>
+    <ul class="m-l">
+      <li>Les projections décrivent un climat moyen sur une période, non une prévision pour une année donnée.</li>
+      <li>La résolution de la grille ne capte ni les effets d'îlot de chaleur urbain, ni les microclimats de relief ou de vallée.</li>
+      <li>Le jeu Max n'est pas un « pire cas » absolu : c'est le modèle le plus élevé de l'ensemble disponible.</li>
+    </ul>
+
+    <h4 class="m-h">Citation</h4>
+    <p class="m-p">Météo&#8209;France DCSC / DRIAS, <i>TRACC2023_DISTRIBUTION</i>. Référence 1976&#8209;2005.</p>
   </div>
 
   <div class="map-legend" id="mapLegend">
@@ -242,25 +424,61 @@ const COOL_NEG_STOPS = ['#FAEEDA','#FAC775','#EF9F27','#BA7517','#854F0B','#4124
 // des précipitations n'a pas de sens univoque : une baisse tire vers la sécheresse,
 // une hausse vers le risque d'inondation. On utilise donc une échelle divergente
 // classée, centrée sur zéro : brun = plus sec, sarcelle = plus humide, gris = stable.
-// Bornes en écart relatif (fraction) vs référence 1976-2005 ; 11 classes.
-const PRECIP_BREAKS = [-0.45,-0.35,-0.25,-0.15,-0.05,0.05,0.15,0.25,0.35,0.45];
+//
+// IMPORTANT — chaque indicateur est classé dans SON unité d'écart native, jamais
+// convertie : % pour les cumuls et intensités (type « écart relatif »), jours pour
+// la fréquence des précipitations remarquables (type « écart absolu »).
+//
+// Structure de l'échelle (identique pour tous) : 11 classes = une classe centrale
+// neutre ±0,5·pas, puis 4 classes de largeur « pas » de chaque côté, puis 2 classes
+// ouvertes aux extrémités. Le pas est calibré par indicateur sur l'ensemble des
+// 53 886 valeurs (3 horizons × 2 jeux Q50/Max) pour maintenir la saturation sous 1 %.
+// Il est fixe par indicateur : la comparaison entre horizons et entre Q50/Max reste valide.
 const PRECIP_COLORS = ['#4F320F','#84541E','#B6843F','#DAC386','#F1E4BE','#F2F2F2',
                        '#CEE9E5','#92CBC1','#52958F','#2B655E','#113128'];
-const PRECIP_LABELS = ['< -45 %','-45 à -35 %','-35 à -25 %','-25 à -15 %','-15 à -5 %','-5 à +5 %',
-                       '+5 à +15 %','+15 à +25 %','+25 à +35 %','+35 à +45 %','> +45 %'];
+const PRECIP_STEP = {
+  'ARRR_yr':        10,   // %  → bornes ±45 %  (saturation 0,01 %)
+  'ARRR_seas_JJA':  10,   // %  → bornes ±45 %  (saturation 0,45 %)
+  'ARRRq99_yr':     10,   // %  → bornes ±45 %  (saturation 0,68 %)
+  'ARRR_seas_DJF':  20,   // %  → bornes ±90 %  (saturation 0,10 % ; amplitude réelle -20 à +131 %)
+  'ARRx1d_yr':      20,   // %  → bornes ±90 %  (saturation 0,54 % ; amplitude réelle -4 à +160 %)
+  'ARRq99refD_yr':   2    // j  → bornes ±9 j   (saturation 0,00 % ; amplitude réelle -0,4 à +9,2 j)
+};
 
-function precipColor(rel){
-  if(rel===null || rel===undefined || isNaN(rel)) return '#F2F2F2';
-  for(let i=0;i<PRECIP_BREAKS.length;i++){ if(rel < PRECIP_BREAKS[i]) return PRECIP_COLORS[i]; }
+// Unité dans laquelle l'ÉCART d'un indicateur est exprimé (≠ unité de la valeur).
+// Les cumuls de précipitations valent des mm, mais leur écart est publié en %.
+function deltaUnitFor(ind){ return ind.type==='écart relatif' ? '%' : ind.unit; }
+
+// Valeur d'écart d'un point, dans son unité native, telle qu'elle sert au classement.
+function deltaNative(ind, delta){
+  if(delta===null || delta===undefined || isNaN(delta)) return null;
+  return ind.type==='écart relatif' ? delta*100 : delta;
+}
+
+function precipBreaks(key){
+  const s = PRECIP_STEP[key] || 10;
+  const b = [];
+  for(let i=0;i<10;i++) b.push((-4.5+i)*s);
+  return b;
+}
+
+function precipColorFor(key, nativeDelta){
+  if(nativeDelta===null || nativeDelta===undefined || isNaN(nativeDelta)) return '#F2F2F2';
+  const b = precipBreaks(key);
+  for(let i=0;i<b.length;i++){ if(nativeDelta < b[i]) return PRECIP_COLORS[i]; }
   return PRECIP_COLORS[PRECIP_COLORS.length-1];
 }
 
-// Évolution relative d'un indicateur en fraction (ex. -0,10 = -10 %).
-// Les indicateurs « écart relatif » portent déjà cette valeur ; pour les écarts
-// absolus (ex. jours de pluies remarquables) on rapporte l'écart à la référence.
-function relativeChange(ind, ref, delta){
-  if(ind.type==='écart relatif') return delta;
-  return Math.abs(ref)>0.05 ? delta/ref : null;
+// Part des points saturés (hors bornes) pour la combinaison affichée — signalée en légende.
+function precipSaturation(indIdx, key, matrix, ind){
+  const b = precipBreaks(key), lo = b[0], hi = b[b.length-1];
+  let n=0, out=0;
+  for(let i=0;i<DATA.ids.length;i++){
+    const d = deltaNative(ind, matrix[i][indIdx]);
+    if(d===null) continue;
+    n++; if(d<lo || d>hi) out++;
+  }
+  return n ? out/n : 0;
 }
 
 const HORIZON_LABELS = {2030:'2030 (France +2°C)', 2050:'2050 (France +2,7°C)', 2100:'2100 (France +4°C)'};
@@ -373,20 +591,114 @@ const DS_TOOLTIP = {
 
 function radioRow(ind, groupName){
   const def = GLOSSARY[ind.key] ? esc(GLOSSARY[ind.key]) : '';
-  return '<label class="radio-row" title="'+def+'"><input type="radio" name="'+groupName+'" value="'+ind.key+'"><span class="rlabel">'+ind.label+'<div class="rcode">'+ind.key+'</div></span></label>';
+  const ib = def ? '<span class="ib" data-info="'+def+'">i</span>' : '';
+  return '<label class="radio-row"><input type="radio" name="'+groupName+'" value="'+ind.key+'"><span class="rlabel">'+ind.label+ib+'<div class="rcode">'+ind.key+'</div></span></label>';
 }
 
-// Bannière d'accueil : affichée au premier chargement uniquement (mémorisée en local)
-(function initOnboarding(){
-  try{
-    const banner = document.getElementById('onboardBanner');
-    if(!localStorage.getItem('tracc_onboard_dismissed')){ banner.style.display='block'; }
-    document.getElementById('onboardClose').addEventListener('click', ()=>{
-      banner.style.display='none';
-      localStorage.setItem('tracc_onboard_dismissed','1');
-    });
-  }catch(e){ /* localStorage indisponible (navigation privée) : pas bloquant */ }
+// ── Info-bulles « i » ────────────────────────────────────────────────────────
+// Survol : apparition après un court délai, disparition automatique au bout de
+// quelques secondes ou à la sortie du curseur. Clic : bascule, pour les écrans
+// tactiles où le survol n'existe pas. Délégation d'événements : fonctionne aussi
+// sur les boutons « i » injectés dynamiquement (indicateurs, légende).
+(function initInfoTips(){
+  const tip = document.createElement('div');
+  tip.id = 'ibTip'; document.body.appendChild(tip);
+  let showT = null, hideT = null, current = null;
+
+  function place(el){
+    const r = el.getBoundingClientRect();
+    tip.style.visibility = 'hidden'; tip.classList.add('show');
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let x = r.left + r.width/2 - tw/2;
+    let y = r.top - th - 9;
+    x = Math.max(8, Math.min(x, window.innerWidth - tw - 8));
+    if(y < 8) y = r.bottom + 9;
+    tip.style.left = x+'px'; tip.style.top = y+'px';
+    tip.style.visibility = 'visible';
+  }
+  function show(el, autoHide){
+    clearTimeout(hideT);
+    current = el; el.classList.add('on');
+    tip.textContent = el.getAttribute('data-info') || '';
+    place(el);
+    if(autoHide) hideT = setTimeout(hide, 7000);
+  }
+  function hide(){
+    clearTimeout(showT); clearTimeout(hideT);
+    tip.classList.remove('show');
+    if(current){ current.classList.remove('on'); current = null; }
+  }
+  document.addEventListener('mouseover', e=>{
+    const el = e.target.closest('.ib'); if(!el || el===current) return;
+    clearTimeout(showT); showT = setTimeout(()=>show(el, true), 220);
+  });
+  document.addEventListener('mouseout', e=>{
+    const el = e.target.closest('.ib'); if(!el) return;
+    clearTimeout(showT); hideT = setTimeout(hide, 160);
+  });
+  document.addEventListener('click', e=>{
+    const el = e.target.closest('.ib');
+    if(!el){ hide(); return; }
+    e.preventDefault(); e.stopPropagation();
+    if(current===el) hide(); else show(el, false);
+  });
+  window.addEventListener('scroll', hide, true);
+  window.addEventListener('resize', hide);
 })();
+
+// ── Modale d'accueil ─────────────────────────────────────────────────────────
+// Affichée au premier chargement seulement (mémorisée localement), et rappelable
+// à tout moment via le bouton « ? Guide » pour ne pas pénaliser les habitués.
+const Tour = (function(){
+  const back = document.getElementById('tour');
+  const steps = [...back.querySelectorAll('.tour-step')];
+  const dots = [...back.querySelectorAll('.tour-dots i')];
+  const bPrev = document.getElementById('tourPrev');
+  const bNext = document.getElementById('tourNext');
+  const bSkip = document.getElementById('tourSkip');
+  let cur = 0;
+
+  function render(){
+    steps.forEach((s,i)=> s.hidden = i!==cur);
+    dots.forEach((d,i)=> d.classList.toggle('on', i===cur));
+    bPrev.hidden = cur===0;
+    bSkip.hidden = cur===steps.length-1;
+    bNext.textContent = cur===steps.length-1 ? 'Commencer' : 'Suivant';
+    back.querySelector('.tour-box').scrollTop = 0;
+  }
+  function open(){ cur=0; render(); back.style.display='flex'; }
+  function close(){
+    back.style.display='none';
+    try{ localStorage.setItem('tracc_tour_seen','1'); }catch(e){}
+  }
+  bNext.addEventListener('click', ()=>{ if(cur<steps.length-1){ cur++; render(); } else close(); });
+  bPrev.addEventListener('click', ()=>{ if(cur>0){ cur--; render(); } });
+  bSkip.addEventListener('click', close);
+  document.getElementById('tourX').addEventListener('click', close);
+  back.addEventListener('click', e=>{ if(e.target===back) close(); });
+  document.addEventListener('keydown', e=>{
+    if(back.style.display==='none') return;
+    if(e.key==='Escape') close();
+    if(e.key==='ArrowRight') bNext.click();
+    if(e.key==='ArrowLeft' && cur>0) bPrev.click();
+  });
+  // Les vignettes de l'écran 2 ouvrent directement l'onglet correspondant
+  back.querySelectorAll('.tour-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const target = card.dataset.goto;
+      close();
+      const btn = document.querySelector('#tabs button[data-tab="'+target+'"]');
+      if(btn) btn.click();
+    });
+  });
+  return {open:open, close:close};
+})();
+
+document.getElementById('helpBtn').addEventListener('click', Tour.open);
+
+try{
+  if(!localStorage.getItem('tracc_tour_seen')) Tour.open();
+}catch(e){ /* localStorage indisponible (navigation privée) : on n'ouvre pas la modale */ }
 
 // Tabs
 document.getElementById('tabs').addEventListener('click', (e)=>{
@@ -396,6 +708,7 @@ document.getElementById('tabs').addEventListener('click', (e)=>{
   [...document.getElementById('tabs').children].forEach(b=>b.classList.toggle('active', b===btn));
   document.getElementById('panel-explorer').style.display = activeTab==='explorer' ? '' : 'none';
   document.getElementById('panel-choropleth').style.display = activeTab==='choropleth' ? '' : 'none';
+  document.getElementById('panel-methodo').style.display = activeTab==='methodo' ? '' : 'none';
 
   if(choroLayer){ map.removeLayer(choroLayer); choroLayer=null; }
   document.getElementById('mapLegend').classList.remove('show');
@@ -875,19 +1188,22 @@ function refreshExplorer(){
   rowsData.forEach(r=>{
     const ind=r.ind;
     const u = unitFor(ind);
+    const du = deltaUnitFor(ind);
     const deltaDisp = ind.type==='écart relatif'
       ? (r.delta>=0?'+':'')+(r.delta*100).toFixed(1)+' %'
-      : (r.delta>=0?'+':'')+r.delta.toFixed(2)+' '+ind.unit;
+      : (r.delta>=0?'+':'')+r.delta.toFixed(2)+' '+du;
     const evoDisp = r.relPct===null ? 'n.s.' : (r.relPct>=0?'+':'')+(r.relPct*100).toFixed(0)+' %';
     const cls = pillClass(ind, r.delta);
-    rows += '<tr><td>'+ind.label+'<div style="font-size:10.5px;color:var(--ink-mute)" title="'+(GLOSSARY[ind.key]?esc(GLOSSARY[ind.key]):'')+'"><code style="font-family:\'IBM Plex Mono\',monospace">'+ind.key+'</code></div></td>'
+    const def = GLOSSARY[ind.key] ? esc(GLOSSARY[ind.key]) : '';
+    const ib = def ? '<span class="ib" data-info="'+def+'">i</span>' : '';
+    rows += '<tr><td>'+ind.label+ib+'<div style="font-size:10.5px;color:var(--ink-mute)"><code style="font-family:\'IBM Plex Mono\',monospace">'+ind.key+'</code></div></td>'
       +'<td class="num">'+fmt(r.ref,2)+' '+u+'</td>'
       +'<td class="num">'+deltaDisp+'</td>'
       +'<td class="num"><b>'+fmt(r.projected,2)+' '+u+'</b></td>'
       +'<td class="num"><span class="delta-pill '+cls+'">'+evoDisp+'</span></td></tr>';
   });
 
-  wrap.innerHTML = '<div class="hint" style="margin-bottom:6px;">Écarts et valeurs projetées calculés par rapport à la période de référence 1976-2005 (moyenne climatique observée). Survolez le code d\u2019un indicateur pour sa définition.</div>'
+  wrap.innerHTML = '<div class="hint" style="margin-bottom:6px;">Écarts et valeurs projetées calculés par rapport à la période de référence <b>1976 à 2005</b>. <span class="ib" data-info="Réf. : valeur observée sur 1976-2005. Écart : évolution projetée, en unité absolue (°C, jours) ou en % pour les cumuls et intensités de précipitations. Projeté : valeur attendue à l\u2019horizon choisi. Évol. : variation en % par rapport à la référence.">i</span> Pour les précipitations, la valeur est en mm mais l\u2019écart est publié en %.</div>'
     + '<table class="indic"><thead><tr><th>Indicateur</th><th style="text-align:right">Réf.</th><th style="text-align:right">Écart</th><th style="text-align:right">Projeté</th><th style="text-align:right">Évol.</th></tr></thead><tbody>'+rows+'</tbody></table>';
   renderHydroBlock('hydro-card-exp', {lat:(selected.clickLat!=null?selected.clickLat:selected.lat), lng:(selected.clickLng!=null?selected.clickLng:selected.lon)}, 'pt'+selected.pid);
   exportBtn.disabled=false;
@@ -921,19 +1237,30 @@ function legendGradient(ind, stops, min, max, suffix){
 }
 
 // Légende classée divergente (précipitations) : bandes discrètes brun → sarcelle
-function legendClassed(ind, suffix){
+function legendClassed(ind, suffix, satPct){
   const legend = document.getElementById('mapLegend');
   legend.classList.add('show');
   document.getElementById('legendTitle').textContent = ind.label + ' (' + ind.key + ') · ' + suffix;
+  const b = precipBreaks(ind.key), u = deltaUnitFor(ind);
+  const lo = b[0], hi = b[b.length-1];
+  const lab = (v)=> (v>0?'+':'')+(Number.isInteger(v)?v:v.toFixed(1))+' '+u;
   let bands = '<div class="class-bar">';
-  PRECIP_COLORS.forEach((c,i)=>{ bands += '<i style="background:'+c+'" title="'+PRECIP_LABELS[i]+'"></i>'; });
+  PRECIP_COLORS.forEach((c,i)=>{
+    const t = i===0 ? '< '+lab(lo)
+            : (i===PRECIP_COLORS.length-1 ? '> '+lab(hi) : lab(b[i-1])+' à '+lab(b[i]));
+    bands += '<i style="background:'+c+'" title="'+t+'"></i>';
+  });
   bands += '</div>';
+  const warn = satPct>0.01
+    ? '<div class="class-warn">⚠ '+(satPct*100).toFixed(1)+' % des points dépassent les bornes et sont regroupés dans les classes extrêmes.</div>'
+    : '';
   document.getElementById('legendBody').innerHTML = bands
-    +'<div class="grad-labels"><span>-45 %</span><span>0</span><span>+45 %</span></div>'
+    +'<div class="grad-labels"><span>'+lab(lo)+'</span><span>0</span><span>'+lab(hi)+'</span></div>'
     +'<div class="class-key"><span><i style="background:#84541E"></i>plus sec</span>'
     +'<span><i style="background:#F2F2F2"></i>stable</span>'
     +'<span><i style="background:#52958F"></i>plus humide</span></div>'
-    +'<div class="class-note">Écart relatif vs référence 1976-2005. Une baisse comme une hausse peuvent être défavorables (sécheresse / ruissellement) : l\u2019échelle est neutre, sans code bon-mauvais.</div>';
+    + warn
+    +'<div class="class-note">Écart vs référence 1976 à 2005, exprimé en '+(u==='%'?'pourcentage':'jours')+' — l\u2019unité native de l\u2019indicateur. Bornes fixes de l\u2019horizon 2030 à 2100 et de Q50 à Max : les cartes sont comparables entre elles. Une baisse comme une hausse peuvent être défavorables (sécheresse / ruissellement) : l\u2019échelle est neutre, sans code bon-mauvais.</div>';
 }
 
 // Rayon des points adapté au zoom : à l'échelle nationale (zoom faible) les points denses
@@ -981,9 +1308,10 @@ function refreshChoropleth(){
     drawPoints(i=>interpolateStops(stops, (projectedValue(ind, DATA.ref[i][indIdx], matrix[i][indIdx])-min)/((max-min)||1)));
     legendGradient(ind, stops, min, max, 'valeurs projetées '+hLabel+' · échelle fixe réf→2100');
   } else {
-    // Précipitations : échelle divergente classée sur l'évolution relative (%)
-    drawPoints(i=>precipColor(relativeChange(ind, DATA.ref[i][indIdx], matrix[i][indIdx])));
-    legendClassed(ind, 'évolution '+hLabel+' vs référence 1976-2005');
+    // Précipitations : échelle divergente classée sur l'écart, dans son unité native
+    drawPoints(i=>precipColorFor(ind.key, deltaNative(ind, matrix[i][indIdx])));
+    legendClassed(ind, 'écart '+hLabel+' vs référence 1976 à 2005',
+                  precipSaturation(indIdx, ind.key, matrix, ind));
   }
 }
 
@@ -1053,7 +1381,7 @@ function renderMapCanvas(comboKey, ds, indKey, highlightIdx, opts){
     const lat=DATA.lats[i], lon=DATA.lons[i];
     if(isZoom && (lat<latMin-0.2||lat>latMax+0.2||lon<lonMin-0.2||lon>lonMax+0.2)) continue;
     if(useDiverging){
-      ctx.fillStyle = precipColor(relativeChange(ind, DATA.ref[i][indIdx], matrix[i][indIdx]));
+      ctx.fillStyle = precipColorFor(ind.key, deltaNative(ind, matrix[i][indIdx]));
     } else {
       const v = comboKey==='ref' ? DATA.ref[i][indIdx]
         : projectedValue(ind, DATA.ref[i][indIdx], matrix[i][indIdx]);
@@ -1088,16 +1416,18 @@ function renderMapCanvas(comboKey, ds, indKey, highlightIdx, opts){
   // légende
   const lgY=titleH+mapH+26, lgX=W*0.18, lgW=W*0.64, lgH=16;
   if(useDiverging){
-    // Bandes discrètes brun → sarcelle, bornes -45 % / 0 / +45 %
+    // Bandes discrètes brun → sarcelle, bornes dans l'unité d'écart native de l'indicateur
+    const bk = precipBreaks(indKey), du = deltaUnitFor(ind);
+    const lo = bk[0], hi = bk[bk.length-1];
     const bw = lgW/PRECIP_COLORS.length;
     PRECIP_COLORS.forEach((c,i)=>{ ctx.fillStyle=c; ctx.fillRect(lgX+i*bw, lgY, bw+0.5, lgH); });
     ctx.strokeStyle='#B0B0B0'; ctx.lineWidth=1; ctx.strokeRect(lgX,lgY,lgW,lgH);
     ctx.fillStyle='#44546A'; ctx.font='22px Dubai, Trebuchet MS, sans-serif';
-    ctx.textAlign='left';   ctx.fillText('-45 %', lgX, lgY+lgH+26);
+    ctx.textAlign='left';   ctx.fillText(lo+' '+du, lgX, lgY+lgH+26);
     ctx.textAlign='center'; ctx.fillText('0', lgX+lgW/2, lgY+lgH+26);
-    ctx.textAlign='right';  ctx.fillText('+45 %', lgX+lgW, lgY+lgH+26);
+    ctx.textAlign='right';  ctx.fillText('+'+hi+' '+du, lgX+lgW, lgY+lgH+26);
     ctx.textAlign='center'; ctx.fillStyle='#6b7280'; ctx.font='19px Dubai, Trebuchet MS, sans-serif';
-    ctx.fillText('Évolution vs référence 1976-2005 · brun = plus sec, sarcelle = plus humide', W/2, lgY+lgH+52);
+    ctx.fillText('Écart vs référence 1976 à 2005 · brun = plus sec, sarcelle = plus humide', W/2, lgY+lgH+52);
   } else {
     const grad=ctx.createLinearGradient(lgX,0,lgX+lgW,0);
     stops.forEach((s,i)=>grad.addColorStop(i/(stops.length-1), s));
@@ -1401,29 +1731,32 @@ document.getElementById('exportBtn').onclick = ()=>{
   // Onglet Glossaire : définition de chaque indicateur (source Météo-France / DRIAS, jeu TRACC-2023).
   const glossary = [
     ['Glossaire des indicateurs TRACC'],
-    ['Période de référence 1976-2005 · écarts absolus pour les températures, écarts relatifs (%) pour les précipitations · Source : Météo-France DCSC / DRIAS'],
+    ['Période de référence 1976 à 2005 · écarts absolus pour les températures, écarts relatifs (%) pour les cumuls et intensités de précipitations · Source : Météo-France DCSC / DRIAS'],
+    ['Attention : pour les cumuls et intensités de précipitations, la VALEUR est en mm mais l\u2019ÉCART est exprimé en %. Les deux unités sont distinguées dans les onglets par horizon.'],
     ['Q50 (médiane) : médiane de l\u2019ensemble des modèles climatiques pour le niveau de réchauffement TRACC considéré — la moitié des modèles projette une valeur inférieure, l\u2019autre moitié une valeur supérieure.'],
     ['Max : valeur maximale de l\u2019ensemble des modèles climatiques pour ce même niveau de réchauffement. Q50 et Max ne sont pas des scénarios d\u2019émissions du GIEC.'],
     [],
-    ['Indicateur','Code DRIAS','Type d\u2019écart','Unité','Définition']
+    ['Indicateur','Code DRIAS','Type d\u2019écart','Unité valeur','Unité écart','Définition']
   ];
-  DATA.indicators.forEach(ind=> glossary.push([ind.label, ind.key, ind.type, unitFor(ind), GLOSSARY[ind.key]||'']));
+  DATA.indicators.forEach(ind=> glossary.push([ind.label, ind.key, ind.type, unitFor(ind), deltaUnitFor(ind), GLOSSARY[ind.key]||'']));
   const gws = XLSX.utils.aoa_to_sheet(glossary);
-  gws['!cols'] = [{wch:42},{wch:16},{wch:14},{wch:8},{wch:90}];
+  gws['!cols'] = [{wch:42},{wch:16},{wch:14},{wch:12},{wch:11},{wch:90}];
   XLSX.utils.book_append_sheet(wb, gws, 'Glossaire');
 
   const refSheet = [['Indicateur','Code DRIAS','Unité','Valeur de référence (1976-2005)']];
-  DATA.indicators.forEach((ind,i)=> refSheet.push([ind.label, ind.key, ind.unit, refRow[i]]));
+  DATA.indicators.forEach((ind,i)=> refSheet.push([ind.label, ind.key, unitFor(ind), refRow[i]]));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(refSheet), 'Référence');
 
   DATA.combos.forEach(combo=>{
     ['q50','max'].forEach(ds=>{
       const deltaRow = DATA.data[combo.key][ds][selected.idx];
-      const sheet = [['Indicateur','Code DRIAS','Type','Unité','Référence','Écart','Valeur projetée']];
+      const sheet = [['Indicateur','Code DRIAS','Type','Unité valeur','Unité écart','Référence (1976 à 2005)','Écart','Valeur projetée']];
       DATA.indicators.forEach((ind,i)=>{
         const ref = refRow[i]; const delta = deltaRow[i];
         const projected = ind.type==='écart relatif' ? ref*(1+delta) : ref+delta;
-        sheet.push([ind.label, ind.key, ind.type, ind.unit, ref, delta, projected]);
+        // L'écart relatif est stocké en fraction : on l'exporte dans son unité d'affichage (%).
+        const deltaOut = ind.type==='écart relatif' ? delta*100 : delta;
+        sheet.push([ind.label, ind.key, ind.type, unitFor(ind), deltaUnitFor(ind), ref, deltaOut, projected]);
       });
       const name = (HORIZON_LABELS[combo.horizon].split(' ')[0])+'_'+(ds==='q50'?'Q50':'Max');
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheet), name.substring(0,31));
